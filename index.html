@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Cherry's Little Room</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Pacifico&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --pink: #f3a6c8;
+      --dark-pink: #c96c99;
+      --cream: #fff8ed;
+      --brown: #765548;
+      --dark: #332c2a;
+      --green: #9bb79b;
+      --blue: #9dbbd7;
+    }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: #ead8c8;
+      color: var(--dark);
+      overflow: hidden;
+      cursor: default;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    /* =========================
+       LANDING SCREEN
+    ========================= */
+
+    .landing {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background:
+        radial-gradient(circle at 50% 20%, #fff5d9 0 5%, transparent 30%),
+        linear-gradient(145deg, #f5c5d8, #e7b5c6 50%, #d79caf);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: .8s ease;
+    }
+
+    .landing.hide {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(1.05);
+    }
+
+    .landing-content {
+      text-align: center;
+      padding: 30px;
+    }
+
+    .landing-content .mini {
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: .65;
+      margin-bottom: 18px;
+    }
+
+    .landing h1 {
+      font-family: "Pacifico", cursive;
+      font-size: clamp(45px, 8vw, 90px);
+      color: #713e57;
+      margin-bottom: 12px;
+    }
+
+    .landing p {
+      font-size: clamp(16px, 2vw, 21px);
+      margin-bottom: 35px;
+      color: #694b58;
+    }
+
+    .enter-btn {
+      border: none;
+      padding: 17px 30px;
+      border-radius: 50px;
+      background: #713e57;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 25px #9e607888;
+      transition: .3s;
+    }
+
+    .enter-btn:hover {
+      transform: translateY(-4px);
+      background: #512c40;
+      box-shadow: 0 15px 30px #9e607888;
+    }
+
+    /* =========================
+       ROOM
+    ========================= */
+
+    .room {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+      background: #e9d4bf;
+    }
+
+    /* Wall */
+
+    .wall {
+      position: absolute;
+      inset: 0 0 30% 0;
+      background:
+        linear-gradient(#ffffff22 1px, transparent 1px),
+        linear-gradient(90deg, #ffffff22 1px, transparent 1px),
+        #f0dcc7;
+      background-size: 35px 35px;
+    }
+
+    /* Floor */
+
+    .floor {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 30%;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          #b98767 0,
+          #b98767 75px,
+          #a9795f 77px,
+          #c18d6b 150px
+        );
+      transform: perspective(400px) rotateX(8deg);
+      transform-origin: bottom;
+    }
+
+    /* Window */
+
+    .window {
+      position: absolute;
+      left: 8%;
+      top: 8%;
+      width: 190px;
+      height: 170px;
+      background: #a9d8ee;
+      border: 14px solid #fff5e7;
+      box-shadow: 0 8px 0 #c5a58f;
+    }
+
+    .window::before {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff5e7;
+    }
+
+    .window::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #fff5e7;
+    }
+
+    .sun {
+      position: absolute;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: #ffe79c;
+      top: 25px;
+      right: 25px;
+      box-shadow: 0 0 30px #fff1a4;
+    }
+
+    /* Wall posters */
+
+    .poster {
+      position: absolute;
+      top: 10%;
+      right: 12%;
+      width: 135px;
+      height: 165px;
+      background: #fff9ed;
+      padding: 10px;
+      transform: rotate(5deg);
+      box-shadow: 0 8px 15px #76554833;
+    }
+
+    .poster-inner {
+      height: 100%;
+      border: 2px solid #e7a7b9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #a45575;
+      font-family: "Pacifico";
+      font-size: 19px;
+    }
+
+    /* Lamp */
+
+    .lamp {
+      position: absolute;
+      top: 5%;
+      left: 48%;
+      width: 70px;
+      height: 100px;
+      z-index: 5;
+    }
+
+    .lamp-shade {
+      width: 75px;
+      height: 50px;
+      background: #e8a7bd;
+      clip-path: polygon(15% 0, 85% 0, 100% 100%, 0 100%);
+      filter: drop-shadow(0 5px 4px #79554855);
+    }
+
+    .lamp-light {
+      position: absolute;
+      top: 42px;
+      left: 50%;
+      width: 180px;
+      height: 150px;
+      transform: translateX(-50%);
+      background: radial-gradient(ellipse, #ffeaa099, transparent 70%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .room.lights-on .lamp-light {
+      opacity: 1;
+    }
+
+    /* =========================
+       DESK
+    ========================= */
+
+    .desk {
+      position: absolute;
+      bottom: 23%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 48%;
+      min-width: 430px;
+      height: 125px;
+      background: #9b674d;
+      border-radius: 10px 10px 0 0;
+      box-shadow: 0 15px 20px #69493c55;
+      z-index: 5;
+    }
+
+    .desk::before,
+    .desk::after {
+      content: "";
+      position: absolute;
+      width: 25px;
+      height: 160px;
+      background: #76503e;
+      top: 100%;
+    }
+
+    .desk::before {
+      left: 30px;
+    }
+
+    .desk::after {
+      right: 30px;
+    }
+
+    /* Laptop */
+
+    .laptop {
+      position: absolute;
+      left: 50%;
+      bottom: 100%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 130px;
+      cursor: pointer;
+      transition: .3s;
+    }
+
+    .laptop:hover {
+      transform: translateX(-50%) translateY(-8px);
+    }
+
+    .screen {
+      width: 180px;
+      height: 110px;
+      background: #353d45;
+      border: 8px solid #262c31;
+      border-radius: 10px 10px 3px 3px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9ee0c1;
+      font-size: 13px;
+    }
+
+    .screen::after {
+      content: "CLICK ME";
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: .3;
+      }
+    }
+
+    .keyboard {
+      width: 200px;
+      height: 12px;
+      background: #272d31;
+      clip-path: polygon(5% 0,95% 0,100% 100%,0 100%);
+    }
+
+    /* Coffee */
+
+    .coffee {
+      position: absolute;
+      right: 25px;
+      bottom: 20px;
+      width: 45px;
+      height: 35px;
+      border-radius: 0 0 12px 12px;
+      background: #f3e2c5;
+      border: 5px solid #fff2da;
+      cursor: pointer;
+    }
+
+    .coffee::before {
+      content: "";
+      position: absolute;
+      right: -14px;
+      top: 5px;
+      width: 14px;
+      height: 17px;
+      border: 4px solid #fff2da;
+      border-left: none;
+      border-radius: 0 10px 10px 0;
+    }
+
+    /* Folder */
+
+    .folder {
+      position: absolute;
+      left: 30px;
+      bottom: 18px;
+      width: 80px;
+      height: 60px;
+      background: #e7b85c;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: .3s;
+      box-shadow: 0 5px 8px #66452f44;
+    }
+
+    .folder::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: 0;
+      width: 35px;
+      height: 15px;
+      background: #e7b85c;
+      border-radius: 5px 5px 0 0;
+    }
+
+    .folder:hover {
+      transform: rotate(-5deg) translateY(-8px);
+    }
+
+    /* =========================
+       BOOKSHELF
+    ========================= */
+
+    .bookshelf {
+      position: absolute;
+      bottom: 30%;
+      right: 4%;
+      width: 230px;
+      height: 330px;
+      background: #805640;
+      border: 10px solid #694735;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      padding: 10px;
+      z-index: 4;
+      box-shadow: 0 10px 20px #65433255;
+    }
+
+    .shelf {
+      height: 75px;
+      border-bottom: 9px solid #5f3e2e;
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .book {
+      width: 27px;
+      border-radius: 2px 2px 0 0;
+      cursor: pointer;
+      transition: .25s;
+      color: white;
+      font-size: 8px;
+      writing-mode: vertical-rl;
+      text-align: center;
+      padding: 4px 2px;
+    }
+
+    .book:hover {
+      transform: translateY(-8px) rotate(-2deg);
+    }
+
+    .book:nth-child(1) { height: 60px; background: #d76e83; }
+    .book:nth-child(2) { height: 52px; background: #6fa6a3; }
+    .book:nth-child(3) { height: 65px; background: #e0a64b; }
+    .book:nth-child(4) { height: 57px; background: #7589b8; }
+    .book:nth-child(5) { height: 48px; background: #a77bb2; }
+
+    /* =========================
+       HEADPHONES
+    ========================= */
+
+    .headphones {
+      position: absolute;
+      left: 7%;
+      bottom: 28%;
+      width: 110px;
+      height: 120px;
+      cursor: pointer;
+      transition: .3s;
+    }
+
+    .headphones:hover {
+      transform: rotate(-8deg) translateY(-8px);
+    }
+
+    .headband {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      width: 90px;
+      height: 90px;
+      border: 15px solid #77506c;
+      border-bottom: none;
+      border-radius: 60px 60px 0 0;
+    }
+
+    .ear {
+      position: absolute;
+      width: 32px;
+      height: 48px;
+      background: #d77fa4;
+      border-radius: 12px;
+      bottom: 5px;
+    }
+
+    .ear.left { left: 0; }
+    .ear.right { right: 0; }
+
+    /* Plant */
+
+    .plant {
+      position: absolute;
+      left: 24%;
+      bottom: 30%;
+      width: 100px;
+      height: 150px;
+      cursor: pointer;
+    }
+
+    .pot {
+      position: absolute;
+      bottom: 0;
+      left: 20px;
+      width: 60px;
+      height: 55px;
+      background: #d98d68;
+      clip-path: polygon(10% 0,90% 0,80% 100%,20% 100%);
+    }
+
+    .leaf {
+      position: absolute;
+      width: 45px;
+      height: 70px;
+      background: #739b71;
+      border-radius: 100% 0 100% 0;
+      transform-origin: bottom;
+    }
+
+    .leaf.one {
+      left: 35px;
+      bottom: 45px;
+      transform: rotate(-30deg);
+    }
+
+    .leaf.two {
+      left: 50px;
+      bottom: 50px;
+      transform: rotate(30deg);
+    }
+
+    .leaf.three {
+      left: 30px;
+      bottom: 65px;
+      transform: rotate(-70deg);
+    }
+
+    /* =========================
+       SIDE MENU
+    ========================= */
+
+    .room-title {
+      position: absolute;
+      top: 25px;
+      left: 30px;
+      z-index: 10;
+      font-family: "Pacifico";
+      font-size: 25px;
+      color: #713e57;
+    }
+
+    .hint {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ffffffaa;
+      backdrop-filter: blur(10px);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      z-index: 20;
+    }
+
+    /* =========================
+       MODAL
+    ========================= */
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: #362c2c88;
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transition: .35s;
+      padding: 20px;
+    }
+
+    .modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      width: min(700px, 95vw);
+      max-height: 85vh;
+      overflow-y: auto;
+      background: var(--cream);
+      border-radius: 25px;
+      padding: 35px;
+      position: relative;
+      box-shadow: 0 25px 70px #0005;
+      transform: translateY(20px);
+      transition: .35s;
+    }
+
+    .modal.active .modal-box {
+      transform: translateY(0);
+    }
+
+    .close {
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      border: none;
+      background: #f1d8df;
+      color: #713e57;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .modal h2 {
+      font-family: "Pacifico";
+      color: #a35377;
+      font-size: 35px;
+      margin-bottom: 20px;
+    }
+
+    .modal p {
+      line-height: 1.7;
+      margin-bottom: 15px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .info-card {
+      background: #f7e5e6;
+      padding: 17px;
+      border-radius: 15px;
+    }
+
+    .info-card small {
+      color: #a35377;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .project-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .project {
+      padding: 18px;
+      border-radius: 15px;
+      background: #eee4d5;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .project:hover {
+      transform: translateX(5px);
+      background: #f4d8e1;
+    }
+
+    .project h3 {
+      color: #87506a;
+      margin-bottom: 5px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #dba2b7;
+      color: white;
+      border-radius: 20px;
+      padding: 5px 10px;
+      font-size: 11px;
+      margin-top: 8px;
+    }
+
+    .interest-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .interest {
+      background: #f3e4d4;
+      border-radius: 15px;
+      padding: 20px 10px;
+      text-align: center;
+      transition: .25s;
+    }
+
+    .interest:hover {
+      transform: translateY(-5px);
+      background: #efd2dc;
+    }
+
+    .interest .icon {
+      font-size: 35px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    /* Music player */
+
+    .player {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 18px;
+      background: #71465d;
+      color: white;
+    }
+
+    .player-bar {
+      width: 100%;
+      height: 5px;
+      background: #ffffff55;
+      border-radius: 10px;
+      margin: 15px 0;
+      overflow: hidden;
+    }
+
+    .player-progress {
+      width: 45%;
+      height: 100%;
+      background: #ffd3e3;
+    }
+
+    .player-controls {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .player-controls button {
+      border: none;
+      background: #ffffff22;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 800px) {
+
+      .window {
+        width: 120px;
+        height: 110px;
+      }
+
+      .poster {
+        display: none;
+      }
+
+      .bookshelf {
+        width: 145px;
+        height: 220px;
+        right: 2%;
+      }
+
+      .book {
+        width: 18px;
+      }
+
+      .desk {
+        min-width: 330px;
+        width: 60%;
+      }
+
+      .headphones {
+        left: 3%;
+        transform: scale(.7);
+      }
+
+      .plant {
+        left: 18%;
+        transform: scale(.7);
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .interest-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .modal-box {
+        padding: 25px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       LANDING PAGE
+  ========================== -->
+
+  <section class="landing" id="landing">
+
+    <div class="landing-content">
+
+      <div class="mini">a tiny corner of the internet</div>
+
+      <h1>Hi, I'm Cherry!</h1>
+
+      <p>
+        Welcome to my little corner of the internet.
+      </p>
+
+      <button class="enter-btn" onclick="enterRoom()">
+        ENTER MY ROOM →
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       ROOM
+  ========================== -->
+
+  <main class="room" id="room">
+
+    <div class="wall"></div>
+
+    <div class="floor"></div>
+
+    <div class="room-title">
+      Cherry's Room ♡
+    </div>
+
+
+    <!-- Window -->
+
+    <div class="window">
+      <div class="sun"></div>
+    </div>
+
+
+    <!-- Poster -->
+
+    <div class="poster">
+      <div class="poster-inner">
+        Dream<br>
+        Learn<br>
+        Create ♡
+      </div>
+    </div>
+
+
+    <!-- Lamp -->
+
+    <div class="lamp">
+
+      <div class="lamp-shade"></div>
+
+      <div class="lamp-light"></div>
+
+    </div>
+
+
+    <!-- Bookshelf -->
+
+    <div
+      class="bookshelf"
+      onclick="openModal('knowledge')"
+      title="My Knowledge"
+    >
+
+      <div class="shelf">
+
+        <div class="book">SCI</div>
+        <div class="book">TECH</div>
+        <div class="book">PROJECT</div>
+        <div class="book">LEARN</div>
+
+      </div>
+
+      <div class="shelf">
+
+        <div class="book">MATH</div>
+        <div class="book">CODE</div>
+        <div class="book">IDEAS</div>
+        <div class="book">NOTES</div>
+
+      </div>
+
+      <div class="shelf">
+
+        <div class="book">PHYSICS</div>
+        <div class="book">WEB</div>
+        <div class="book">SCHOOL</div>
+
+      </div>
+
+    </div>
+
+
+    <!-- Plant -->
+
+    <div class="plant" title="Keep growing!">
+
+      <div class="leaf one"></div>
+      <div class="leaf two"></div>
+      <div class="leaf three"></div>
+
+      <div class="pot"></div>
+
+    </div>
+
+
+    <!-- Headphones -->
+
+    <div
+      class="headphones"
+      onclick="openModal('interests')"
+      title="My Interests"
+    >
+
+      <div class="headband"></div>
+
+      <div class="ear left"></div>
+      <div class="ear right"></div>
+
+    </div>
+
+
+    <!-- Desk -->
+
+    <div class="desk">
+
+      <!-- Laptop -->
+
+      <div
+        class="laptop"
+        onclick="openModal('about')"
+        title="About Me"
+      >
+
+        <div class="screen"></div>
+        <div class="keyboard"></div>
+
+      </div>
+
+
+      <!-- Folder -->
+
+      <div
+        class="folder"
+        onclick="openModal('projects')"
+        title="My Projects"
+      ></div>
+
+
+      <!-- Coffee -->
+
+      <div class="coffee" title="coffee break ☕"></div>
+
+    </div>
+
+
+    <div class="hint">
+      Click the objects around the room to explore ✦
+    </div>
+
+  </main>
+
+
+  <!-- =========================
+       MODAL
+  ========================== -->
+
+  <div class="modal" id="modal">
+
+    <div class="modal-box">
+
+      <button class="close" onclick="closeModal()">
+        ×
+      </button>
+
+      <div id="modalContent"></div>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    const modal = document.getElementById("modal");
+    const modalContent = document.getElementById("modalContent");
+
+
+    // Enter room
+
+    function enterRoom() {
+
+      document
+        .getElementById("landing")
+        .classList.add("hide");
+
+      setTimeout(() => {
+
+        document
+          .getElementById("room")
+          .classList.add("lights-on");
+
+      }, 700);
+
+    }
+
+
+    // Open modal
+
+    function openModal(type) {
+
+      let content = "";
+
+
+      // ======================
+      // ABOUT ME
+      // ======================
+
+      if (type === "about") {
+
+        content = `
+
+          <h2>About Me ♡</h2>
+
+          <p>
+            Hi! I'm Cherry, a curious student who loves
+            learning new things and turning ideas into
+            little projects.
+          </p>
+
+          <div class="info-grid">
+
+            <div class="info-card">
+              <small>NAME</small>
+              Cherry
+            </div>
+
+            <div class="info-card">
+              <small>GRADE</small>
+              Grade 10 Student
+            </div>
+
+            <div class="info-card">
+              <small>INTERESTED IN</small>
+              Technology, Science & Engineering
+            </div>
+
+            <div class="info-card">
+              <small>DREAM</small>
+              Studying at ITB
+            </div>
+
+            <div class="info-card">
+              <small>CURRENTLY LEARNING</small>
+              Programming & Public Speaking
+            </div>
+
+            <div class="info-card">
+              <small>FUN FACT</small>
+              I can spend hours making tiny websites.
+            </div>
+
+          </div>
+
+        `;
+
+      }
+
+
+      // ======================
+      // KNOWLEDGE
+      // ======================
+
+      else if (type === "knowledge") {
+
+        content = `
+
+          <h2>My Knowledge 📚</h2>
+
+          <p>
+            These are some of the things I've been
+            learning, exploring, and documenting.
+          </p>
+
+          <div class="project-list">
+
+            <div class="project">
+              <h3>🔬 Science</h3>
+              <p>
+                Notes, experiments, and interesting
+                science concepts I've discovered.
+              </p>
+              <span class="tag">LEARNING</span>
+            </div>
+
+            <div class="project">
+              <h3>💻 Technology</h3>
+              <p>
+                Programming, websites, computers,
+                and technology experiments.
+              </p>
+              <span class="tag">TECH</span>
+            </div>
+
+            <div class="project">
+              <h3>📝 School Projects</h3>
+              <p>
+                A collection of assignments and projects
+                I've worked on at school.
+              </p>
+              <span class="tag">SCHOOL</span>
+            </div>
+
+            <div class="project">
+              <h3>💡 Things I've Learned</h3>
+              <p>
+                Small lessons, notes, mistakes,
+                discoveries, and ideas.
+              </p>
+              <span class="tag">NOTES</span>
+            </div>
+
+          </div>
+
+        `;
+
+      }
+
+
+      // ======================
+      // INTERESTS
+      // ======================
+
+      else if (type === "interests") {
+
+        content = `
+
+          <h2>My Interests 🎧</h2>
+
+          <p>
+            A few things that make my everyday life
+            more fun.
+          </p>
+
+          <div class="interest-grid">
+
+            <div class="interest">
+              <span class="icon">🎵</span>
+              Music
+            </div>
+
+            <div class="interest">
+              <span class="icon">🎬</span>
+              Movies
+            </div>
+
+            <div class="interest">
+              <span class="icon">📷</span>
+              Photography
+            </div>
+
+            <div class="interest">
+              <span class="icon">📚</span>
+              Reading
+            </div>
+
+            <div class="interest">
+              <span class="icon">🏀</span>
+              Sports
+            </div>
+
+            <div class="interest">
+              <span class="icon">🎙️</span>
+              Broadcasting
+            </div>
+
+          </div>
+
+
+          <div class="player">
+
+            <strong>♪ currently playing</strong>
+
+            <div style="margin-top:7px">
+              My Favorite Song
+            </div>
+
+            <div class="player-bar">
+              <div class="player-progress"></div>
+            </div>
+
+            <div class="player-controls">
+
+              <button>⏮</button>
+
+              <button onclick="toggleMusic()">
+                ▶
+              </button>
+
+              <button>⏭</button>
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+
+
+      // ======================
+      // PROJECTS
+      // ======================
+
+      else if (type === "projects") {
+
+        content = `
+
+          <h2>My Projects 🗂️</h2>
+
+          <p>
+            Things I've created while learning,
+            experimenting, and having fun.
+          </p>
+
+          <div class="project-list">
+
+            <div class="project">
+
+              <h3>🌐 Personal Website</h3>
+
+              <p>
+                A personal website where I experiment
+                with HTML, CSS, and JavaScript.
+              </p>
+
+              <span class="tag">
+                HTML / CSS / JS
+              </span>
+
+            </div>
+
+
+            <div class="project">
+
+              <h3>🤖 Mini Programming Project</h3>
+
+              <p>
+                A small programming experiment created
+                to understand logic and problem solving.
+              </p>
+
+              <span class="tag">
+                PROGRAMMING
+              </span>
+
+            </div>
+
+
+            <div class="project">
+
+              <h3>🔬 Science Project</h3>
+
+              <p>
+                Documentation of a school science
+                project including the process and results.
+              </p>
+
+              <span class="tag">
+                SCIENCE
+              </span>
+
+            </div>
+
+
+            <div class="project">
+
+              <h3>🎙️ Broadcasting Project</h3>
+
+              <p>
+                A project exploring public speaking,
+                storytelling, and communication.
+              </p>
+
+              <span class="tag">
+                COMMUNICATION
+              </span>
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+
+
+      modalContent.innerHTML = content;
+
+      modal.classList.add("active");
+
+    }
+
+
+    // Close modal
+
+    function closeModal() {
+
+      modal.classList.remove("active");
+
+    }
+
+
+    // Close when clicking outside
+
+    modal.addEventListener("click", function(e) {
+
+      if (e.target === modal) {
+
+        closeModal();
+
+      }
+
+    });
+
+
+    // ESC key
+
+    document.addEventListener("keydown", function(e) {
+
+      if (e.key === "Escape") {
+
+        closeModal();
+
+      }
+
+    });
+
+
+    // Simple music interaction
+
+    function toggleMusic() {
+
+      const button = event.target;
+
+      if (button.innerText === "▶") {
+
+        button.innerText = "❚❚";
+
+      } else {
+
+        button.innerText = "▶";
+
+      }
+
+    }
+
+  </script>
+
+</body>
+</html>
